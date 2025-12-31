@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Widget Relay</title>
+</head>
+<body>
+    <script>
+        // 1. Open a channel on this specific domain
+        const channel = new BroadcastChannel('gameathon_sync_v1');
+
+        // 2. Listen for messages from the PARENT (Local File)
+        window.addEventListener('message', (event) => {
+            if (event.data) {
+                channel.postMessage(event.data);
+            }
+        });
+
+        // 3. Listen for messages from the CHANNEL (Other Window)
+        channel.onmessage = (event) => {
+            // Send back up to the PARENT (Local File)
+            if (window.parent !== window) {
+                window.parent.postMessage(event.data, '*');
+            }
+        };
+    </script>
+</body>
+</html>
